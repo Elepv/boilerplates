@@ -80,11 +80,11 @@ source "proxmox" "ubuntu-server-2210-tmpl" {
         "<esc><wait><esc><wait>",
         "<f6><wait><esc><wait>",
         "<bs><bs><bs><bs><bs>",
-        "autoinstall ds=nocloud-net;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ ",
+        "autoinstall ds=nocloud-net\\;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ ",
         "--- <enter>"
     ]
     boot = "c"
-    boot_wait = "3s"
+    boot_wait = "5s"
 
     # PACKER Autoinstall Settings
     http_directory = "http" 

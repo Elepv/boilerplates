@@ -7,8 +7,19 @@
 安装packer
 
 ```bash
+# macos
 brew install packer
+
+
+# ubuntu
+curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+
+sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+
+sudo apt-get update && sudo apt-get install packer
+
 ```
+
 
 下载系统iso镜像文件，并将iso文件上传到pve服务器：`pve-tns:iso`中。
 

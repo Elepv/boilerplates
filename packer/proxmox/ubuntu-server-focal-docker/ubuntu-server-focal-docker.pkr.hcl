@@ -78,7 +78,7 @@ source "proxmox" "ubuntu-server-focal-docker-tmpl" {
         "<esc><wait><esc><wait>",
         "<f6><wait><esc><wait>",
         "<bs><bs><bs><bs><bs>",
-        "autoinstall ds=nocloud-net;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ ",
+        "autoinstall ds=nocloud-net\\;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ ",
         "--- <enter>"
     ]
     boot = "c"
