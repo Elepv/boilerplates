@@ -1,0 +1,75 @@
+- name: "Create rook directory in /tmp"
+  file:
+      path: /tmp/rook
+      state: directory
+
+
+- name: Get Rook version {{rook_version}}
+  unarchive:
+    src: https://github.com/rook/rook/archive/v{{rook_version}}.tar.gz
+    dest: /tmp/rook
+    remote_src: yes
+
+- name: Install kubectl
+  shell: |
+     apt update && sudo apt install -y apt-transport-https python-passlib
+     curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+     touch /etc/apt/sources.list.d/kubernetes.list
+     echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/sources.list.d/kubernetes.list
+     apt update
+     apt install -y kubectl
+- name: Get kubectl config and copy it in $HOME/.kube/config
+  shell: |
+     cd /tmp
+     wget https://gist.githubusercontent.com/superseb/f6cd637a7ad556124132ca39961789a4/raw/4db7da97073ccb6049f797df1880dcd36850179e/get_kubeconfig_custom_cluster_rancher2.sh
+     chmod +x get_kubeconfig_custom_cluster_rancher2.sh
+     mkdir -p /root/.kube
+     ./get_kubeconfig_custom_cluster_rancher2.sh {{ rancher_cluster }}
+     cp kubeconfig /root/.kube/config
+- name: Set FLEXVOLUME_DIR_PATH for Rook to be able to work with Rancher
+  lineinfile:
+    dest: /tmp/rook/rook-{{rook_version}}/cluster/examples/kubernetes/ceph/operator.yaml
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  with_items:
+    - { regexp: '# - name: FLEXVOLUME_DIR_PATH', line: '        - name: FLEXVOLUME_DIR_PATH' }
+    - { regexp: '#  value: "<PathToFlexVolumes>"', line: '          value: "/var/lib/kubelet/volumeplugins"' }
+
+- name: "Create Rook operator"
+  shell: kubectl create -f /tmp/rook/rook-{{rook_version}}/cluster/examples/kubernetes/ceph/operator.yaml
+
+- name: "Watching for pods being created, wait for them to have the Running state"
+  shell: kubectl -n rook-ceph-system get pod | grep "Running" | wc -l
+  register: nb_running_pods
+  retries: 5
+  delay: 30
+  until: nb_running_pods.stdout == "3"
+
+- pause:
+    minutes: 5
+
+- name: "Create Rook cluster"
+  shell: kubectl create -f /tmp/rook/rook-{{rook_version}}/cluster/examples/kubernetes/ceph/cluster.yaml
+
+ 
+- name: "Watching for pods being created, wait for them to have the Running state and one Completed"
+  shell: kubectl -n rook-ceph get pod | grep -E "Completed|Running" | wc -l
+  register: nb_running_pods
+  retries: 5
+  delay: 30
+  until: nb_running_pods.stdout == "6"
+
+- name: "Create Rook storage class"
+  shell: kubectl create -f /tmp/rook/rook-{{rook_version}}/cluster/examples/kubernetes/ceph/storageclass.yaml
+
+- name: "Set the Rook storage class as default"
+  shell: |
+    kubectl patch storageclass rook-ceph-block -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+- name: "Create a shared file system"
+  shell: kubectl create -f /tmp/rook/rook-{{rook_version}}/cluster/examples/kubernetes/ceph/filesystem.yaml
+
+- name: "Create toolbox"
+  shell: kubectl create -f /tmp/rook/rook-{{rook_version}}/cluster/examples/kubernetes/ceph/toolbox.yaml
+
+- name: "Install Rook dashboard"
+  shell: kubectl create -f /tmp/rook/rook-{{rook_version}}/cluster/examples/kubernetes/ceph/dashboard-external-http.yaml

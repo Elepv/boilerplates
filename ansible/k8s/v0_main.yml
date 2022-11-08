@@ -1,0 +1,18 @@
+# - include: v1_send_sshKey_to_hosts.yml
+- include: v1.2_send_ssh_different_user.yml
+  tags: sshkey
+
+# - include: v2_copy_file.yml
+#   tags: sync_hosts
+
+- include: v3_swapoff.yml
+  tags: swapoff
+
+# - include: v5_ntpdate.yml
+- include: v5_ntpdate.yml
+  tags: sync_time
+
+- include: v7_add_repo_install_docker_k8s.yml
+  tags: apps
+
+- include: v6_modify_ulimit.yml 

@@ -1,0 +1,50 @@
+---
+- name: ensure ssh-key is present
+  hosts: all
+  become: true
+  tasks:
+
+  - name: Install other packages.
+    package:
+      name: ipvsadm
+      state: present
+
+  - name: Modprode Kernel Module for IPVS
+    modprobe:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - ip_vs
+      - ip_vs_rr
+      - ip_vs_wrr
+      - ip_vs_sh
+      - nf_conntrack
+    # when: kube_proxy_mode == 'ipvs'
+    # tags:
+    #   - kube-proxy
+
+  - name: Copy ipvs.conf to servers
+    copy:
+      src: ./files/ipvs.conf
+      dest: /etc/modules-load.d/ipvs.conf
+      owner: root
+      group: root
+      mode: u=rwx,g=rx,o=rx
+
+  - name: Enalbe service
+    systemd:
+      name: systemd-modules-load.service
+      state: started
+      enabled: true
+
+
+# - name: "Setup SNAT for LVS"
+#   iptables:
+#     table: nat
+#     chain: POSTROUTING
+#     match: ipvs
+#     vaddr: '192.168.1.11/24'
+#     vport: 443
+#     jump: SNAT
+#     to_source: '192.168.1.21'
+#     comment: "SNAT the VIP"

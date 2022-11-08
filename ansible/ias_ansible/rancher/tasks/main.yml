@@ -1,0 +1,13 @@
+- include: docker.yml
+  tags: docker
+
+- include: server.yml
+  tags: server
+
+- include: rook.yml
+  tags: rook
+  when: install_rook
+
+- include: certmanager_catalog.yml
+  tags: certmanager
+  when: install_certmanager

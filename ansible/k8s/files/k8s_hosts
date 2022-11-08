@@ -1,0 +1,10 @@
+127.0.0.1	localhost
+255.255.255.255	broadcasthost
+::1             localhost
+
+192.168.1.97 rancher
+192.168.1.34 k8s-master01
+192.168.1.35 k8s-master02
+192.168.1.36 k8s-master03
+192.168.1.41 k8s-node01
+192.168.1.42 k8s-node02

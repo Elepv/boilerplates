@@ -1,0 +1,44 @@
+- name: install httpd package (CentOS)
+  tags: apache,centos,httpd
+  dnf:
+    name:
+      - httpd
+      - php
+    state: latest
+  when: ansible_distribution == "CentOS"
+
+- name: start and enable httpd (CentOS)
+  tags: apache,centos,httpd
+  service:
+    name: httpd
+    state: started
+    enabled: yes
+  when: ansible_distribution == "CentOS"
+
+- name: install apache2 package (Ubuntu)
+  tags: apache,apache2,ubuntu
+  apt:
+    name:
+      - apache2
+      - libapeche2-mod-php
+    state: latest
+  when: ansible_distribution == "Ubuntu"
+
+- name: change email address for admin
+  tags: apache,centos,httpd
+  lineinfile:
+    path: /etc/httpd/conf/httpd.conf
+    regexp: '^ServerAdmin'
+    line: ServerAdmin vivishadow@126.com
+  when: ansible_distribution == "CentOS"
+  notify: restart_apache
+
+- name: copy html file for site
+  tags: apache,apache2,httpd
+  copy:
+    src: default_site.html
+    dest: /var/www/html/index.html
+    owner: root
+    group: root
+    mode: 0644
+

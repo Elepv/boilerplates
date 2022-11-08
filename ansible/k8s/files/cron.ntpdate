@@ -1,0 +1,1 @@
+0,11 * * * * root /usr/sbin/ntpdate ntpdate cn.pool.ntp.org

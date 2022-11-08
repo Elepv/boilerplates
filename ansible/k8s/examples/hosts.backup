@@ -1,0 +1,13 @@
+[linuxsrv_1]
+192.168.1.34 
+
+[linuxsrv_2]
+192.168.1.35
+
+[linuxsrv:children]
+linuxsrv_1
+linuxsrv_2
+
+[all:vars]
+ansible_user=root
+

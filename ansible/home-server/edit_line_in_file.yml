@@ -1,0 +1,12 @@
+---
+- name: edit file. And change the content in the line.
+  hosts: all
+  become: true
+  tasks:
+
+  - name: add a new line in line 34 to 35 at the file /etc/ssh/sshd_config
+    lineinfile:
+      path: ~/sshd_config
+      regexp: '^PermitRootLogin prohibit-password'
+      line: PermitRootLogin yes
+

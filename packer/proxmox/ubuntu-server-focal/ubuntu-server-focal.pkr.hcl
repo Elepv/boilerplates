@@ -17,6 +17,7 @@ variable "proxmox_api_token_secret" {
 }
 
 # Resource Definiation for the VM Template
+# !!! 需要修改source名称
 source "proxmox" "ubuntu-server-focal-tmpl" {
  
     # Proxmox Connection Settings
@@ -28,12 +29,14 @@ source "proxmox" "ubuntu-server-focal-tmpl" {
     
     # VM General Settings
     node = "pve"
+    # !!! 需要修改vm_id vm_name template_description
     vm_id = "321"
     vm_name = "ubuntu-server-focal-tmpl"
     template_description = "Ubuntu Server Focal Image"
 
     # VM OS Settings
     # (Option 1) Local ISO File
+    # !!! 修改iso信息
     iso_file = "pve-tns:iso/ubuntu-20.04-live-server-amd64.iso"
     # - or -
     # (Option 2) Download ISO
@@ -48,7 +51,7 @@ source "proxmox" "ubuntu-server-focal-tmpl" {
     scsi_controller = "virtio-scsi-pci"
 
     disks {
-        disk_size = "20G"
+        disk_size = "80G"
         format = "raw"
         storage_pool = "local-lvm"
         storage_pool_type = "lvm"
@@ -70,7 +73,7 @@ source "proxmox" "ubuntu-server-focal-tmpl" {
 
     # VM Cloud-Init Settings
     cloud_init = true
-    cloud_init_storage_pool = "local-lvm"
+    cloud_init_storage_pool = "sn750wd2t"
 
     # PACKER Boot Commands
     boot_command = [
@@ -135,5 +138,18 @@ build {
     }
 
     # Add additional provisioning scripts here
+    # !!! 自定义运行的shell命令
+    provisioner "shell" {
+        inline = [
+            "sudo apt-get update",
+            "sudo apt-get -y upgrade",
+            "sudo apt-get -y dist-upgrade",
+            "sudo apt-get -y install 
+            linux-generic linux-headers-generic linux-image-generic",
+            "sudo apt-get -y install qemu-guest-agent cloud-init",
+            "sudo apt-get -y install wget curl",
+            "exit 0"
+        ]
+    }
     # ...
 }

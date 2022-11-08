@@ -1,0 +1,18 @@
+[servers_group_name1]
+ip addr1
+ip addr2
+
+[servers_group_name2]
+ip addr3
+ip addr4
+
+[servers:children]
+servers_group_name1
+servers_group_name2
+
+[all:vars]
+ansible_user=root
+
+[servers_group_name1:vars]
+ansible_password=password
+

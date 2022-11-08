@@ -1,0 +1,10 @@
+---
+- name: ansible install packages
+  hosts: linuxsrv
+  tasks:
+    - name: Add Docker’s official GPG key; Use the following command to set up the stable repository
+      shell: |
+        cd
+        mkdir tmp
+        cd tmp
+        touch f1

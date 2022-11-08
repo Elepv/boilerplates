@@ -1,0 +1,31 @@
+---
+- name: ansible install packages
+  hosts: linuxsrv
+  tasks:
+
+    - name: apt update repositories cache and install package, ignoring "install-recommends"
+      apt:
+        name: nginx
+        update_cache: yes
+        install_recommends: no
+
+          #    - name: remove package
+          #      apt:
+          #        name: foo
+          #        state: absent
+          #
+          #    - name: update all packages to the latest version
+          #      apt:
+          #        upgrade: dist
+          #
+          #    - name: install the version '1.00' of package foo
+          #      apt:
+          #        name: foo=1.00
+          #        state: present
+          #  
+          #    - name: update the repository cache and update package "nginx" to latest version using default release squeeze-backport
+          #      apt:
+          #        name: nginx
+          #        state: latest
+          #        default_release: squeeze-backports
+          #        update_cache: yes

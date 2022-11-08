@@ -1,0 +1,27 @@
+# this is a basic file putting different hosts into categories
+# used by ansible to determine which actions to run on which hosts
+
+[all]
+#10.0.9.41
+10.0.9.31
+10.0.9.32
+10.0.9.33
+10.0.9.34
+10.0.9.35
+
+[kube_server]
+#10.0.9.41
+10.0.9.31
+10.0.9.32
+10.0.9.33
+
+[kube_agents]
+#10.0.9.51
+10.0.9.34
+10.0.9.35
+
+[kube_storage]
+#10.0.9.61
+
+[local]
+# 10.0.9.99
