@@ -144,8 +144,7 @@ build {
             "sudo apt-get update",
             "sudo apt-get -y upgrade",
             "sudo apt-get -y dist-upgrade",
-            "sudo apt-get -y install 
-            linux-generic linux-headers-generic linux-image-generic",
+            "sudo apt-get -y install linux-generic linux-headers-generic linux-image-generic",
             "sudo apt-get -y install qemu-guest-agent cloud-init",
             "sudo apt-get -y install wget curl",
             "exit 0"
