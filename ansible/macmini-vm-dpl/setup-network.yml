@@ -1,0 +1,20 @@
+---
+- hosts: all
+  become: true
+  tasks:
+  - name: Configure static IP
+    become: true
+    template:
+      src: interfaces.j2
+      dest: /etc/network/interfaces
+    notify:
+      - restart networking
+
+  handlers:
+    - name: restart networking
+      become: true
+      systemd:
+        name: networking
+        state: restarted
+
+
