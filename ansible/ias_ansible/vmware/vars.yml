@@ -1,7 +1,0 @@
----
-hostname: "vmware.example.com"
-username: "username@vsphere.local"
-password: "1234"
-datacenter: "vmwaredatacenter"
-validate_certs: false
-name: "myvm"

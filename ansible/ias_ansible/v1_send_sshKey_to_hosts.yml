@@ -1,9 +1,0 @@
----
-- name: ensure ssh-key is present
-  hosts: all
-  tasks:
-  - name: send the pub_keys to remote hosts
-    ansible.posix.authorized_key:
-      user: root
-      key: "{{lookup('file', '~/.ssh/id_rsa.pub')}}"
-      state: present

@@ -1,5 +1,0 @@
-apache_package_name: apache2
-apcache_service: apache2
-php_package_name: libapache2-mod-php
-ssh_users: "cris"
-ssh_template_file: sshd_config_ubuntu.j2
