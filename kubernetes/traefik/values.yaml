@@ -1,0 +1,63 @@
+globalArguments:
+  # - "--api.insecure=true"
+  - "--global.sendanonymoususage=false"
+  - "--global.checknewversion=false"
+
+additionalArguments:
+  # - "--providers.kubernetesingress.ingressendpoint.ip=${METALLB_TRAEFIK_ADDR}"
+  # - "--providers.kubernetesingress.allowexternalnameservices=true"
+  # - "--providers.kubernetescrd.allowexternalnameservices=true"
+  - "--serverstransport.insecureskipverify=true"
+  - "--log.level=DEBUG"
+
+deployment:
+  enabled: true
+  replicas: 3
+  annotations: {}
+  podAnnotations: {}
+  additionalContainers: []
+  initContainers: []
+
+ports:
+  # traefik:
+  #   expose: true
+  web:
+    redirectTo: websecure
+    # address: :80
+  websecure:
+    tls:
+      enabled: true
+      # options: "default"
+
+ingressRoute:
+  dashboard:
+    enabled: false
+
+providers:
+  kubernetesCRD:
+    enabled: true
+    ingressClass: traefik-external
+  kubernetesIngress:
+    enabled: true
+    publishedService:
+      enabled: false
+
+rbac:
+  enabled: true
+
+service:
+  enabled: true
+  type: LoadBalancer
+  annotations: {}
+  labels: {}
+  spec:
+    loadBalancerIP: 10.0.9.191  # this should be an IP in the MetalLB range
+    # externalTrafficPolicy: Local
+  loadBalancerSourceRanges: []
+  externalIPs: []
+   # - 10.0.9.180
+
+# Set Traefik as your default Ingress Controller, according to Kubernetes 1.19+ changes.
+ingressClass:
+  enabled: true
+  isDefaultClass: true

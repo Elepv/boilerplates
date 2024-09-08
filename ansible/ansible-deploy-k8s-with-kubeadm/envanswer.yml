@@ -1,0 +1,30 @@
+# VMware SDDC information
+vcenter: "vcenter.home.virtualelephant.com"
+vcenter_user: "administrator@vsphere.local"
+vcenter_pass: "PASSWORD"
+dc: "Datacenter"
+cluster_name: "R630 Cluster"
+datastore: "syn-lun4"
+
+
+# Cilium Cluster
+#folder: "Cilium"
+#vm_prefix: "cilium"
+#ubuntu_template: "Ubuntu-18.04-LTS-v2"
+#temp_vm: "temp105"
+#portgroup: "vlan105"
+#vm_cidr: "10.105.0"
+
+# Flannel Cluster
+folder: "Kubernetes"
+vm_prefix: "kube"
+ubuntu_template: "Ubuntu-18.04-LTS-v104"
+temp_vm: "temp104"
+portgroup: "vlan104"
+vm_cidr: "10.104.0"
+
+num_nodes: 6
+
+# Kubernetes / OS information
+pod_cidr: "10.244.0.0/16"
+home_dir: "/home/deploy"

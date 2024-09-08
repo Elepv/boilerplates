@@ -1,0 +1,14 @@
+# apiVersion: cert-manager.io/v1
+# kind: Certificate
+# metadata:
+#   name: nginx-cert
+#   namespace: test
+# spec:
+#   secretName: self-signed-ca-secret
+#   issuerRef:
+#     name: ca-issuer
+#     # name: self-signed-clusterissuer
+#     kind: Issuer
+#     # kind: ClusterIssuer
+#   dnsNames:
+#     - nginx.local.elepnt.com

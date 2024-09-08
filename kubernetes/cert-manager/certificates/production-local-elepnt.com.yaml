@@ -1,0 +1,15 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: local-elepnt-com
+  namespace: traefik
+spec:
+  secretName: local-elepnt-com-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  commonName: "*.local.elepnt.com"
+  dnsNames:
+    - "local.elepnt.com"
+    - "*.local.elepnt.com"

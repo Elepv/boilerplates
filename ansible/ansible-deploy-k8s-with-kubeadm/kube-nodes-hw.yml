@@ -1,0 +1,22 @@
+---
+- hosts: localhost
+  gather_facts: false
+  connection: local
+
+  vars_files:
+    - envanswer.yml
+
+  tasks:
+  - name: Increase HW config on Kubernetes minion nodes
+    vmware_guest:
+      hostname: "{{ vcenter }}"
+      username: "{{ vcenter_user }}"
+      password: "{{ vcenter_pass }}"
+      validate_certs: false
+      name: "{{ vm_prefix }}-node{{ item }}"
+      hardware:
+        memory_mb: 8192
+        num_cpus: 4
+    delegate_to: localhost
+    register: update_minion_hw
+    with_sequence: start=0 end={{num_nodes|int}}

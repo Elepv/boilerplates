@@ -1,0 +1,18 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: self-signed-ca
+  labels:
+    app: self-signed-ca
+spec:
+  secretName: self-signed-ca
+  duration: 43800h # 5 years
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS8
+    size: 4096
+  issuerRef:
+    name: selfsigned-cluster-issuer
+  commonName: "ca.elepnt.com"
+  isCA: true
+

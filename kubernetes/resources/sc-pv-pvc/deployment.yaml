@@ -1,0 +1,67 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webserver # Name of the deployment
+  namespace: web-test # Name of the namespace
+  labels:
+    app: webserver  # Name of your application
+spec:
+  selector:
+    matchLabels:
+      app: webserver # Name of your application
+  replicas: 1 # Number of replicas
+  template:
+    metadata:
+      labels:
+        app: webserver # Name of your application
+    spec:
+      containers:
+      # Containers are the individual pieces of your application that you want
+      # to run.
+      - name: nginx # Name of the container
+        image: nginx:latest # The image you want to run
+        ports:
+        # Ports are the ports that your application uses.
+        - containerPort: 80 # The port that your application uses
+        volumeMounts:
+          - name: nfs
+            mountPath: /usr/share/nginx/html
+      volumes:
+      - name: nfs
+        persistentVolumeClaim:
+          claimName: nfs
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name:  webserver-service
+  namespace: web-test
+spec:
+  selector:
+    app:  webserver
+  # ---
+  # type:  ClusterIP
+  # ClusterIP means this service can be accessed by any pod in the cluster
+  # ports:
+  # - name:  http
+  #   port:  8080
+  #   targetPort: 80
+  #   protocol: TCP  # optional protocol
+  # ---
+  # type:  NodePort
+  # NodePort means this service is only accessible by pods in the same namespace
+  # ports:
+  # - name:  http
+  #   port:  80
+  #   nodePort: 30001
+  #   protocol: TCP  # optional protocol
+  # ---
+  type:  LoadBalancer
+  # LoadBalancer means this service is load-balanced across all nodes in the cluster
+  ports:
+  - name:  http
+    port:  80
+    targetPort: 80
+    protocol: TCP  # optional protocol
+

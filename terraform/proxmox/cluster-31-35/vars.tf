@@ -7,5 +7,5 @@ variable "proxmox_host" {
 }
 
 variable "template_name" {
-    default = "ubuntu-server-2210"
+    default = "ubuntu-server-focal-tmpl2"
 }

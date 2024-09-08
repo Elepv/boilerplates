@@ -1,0 +1,47 @@
+#cloud-config
+
+# create group 'admingroup' with member 'root', and empty group 'cloud-users'
+groups:
+  - admingroup: [root]
+  - docker
+
+# install package 'git'
+package_update: true
+package_upgrade: true
+packages:
+  - git
+  - docker.io
+  - curl
+  - sudo
+  - neofetch
+  - vim
+  - htop
+  - wget
+  - net-tools
+  - build-essential
+  - jq
+  - locales
+  - locales-all
+  # - nodejs  # 不是最新版本 nodejs
+
+users:
+  - name: cyrus
+    gecos: "Cyrus Elp"
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups: sudo, docker
+    shell: /bin/bash
+    lock_passwd: false
+    passwd: 03220123vivi
+    ssh_authorized_keys:
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH/eqvFrQkKcecxepRxqFzYHom9UG/WA8qc4dfJ0GCjv cris@vMBP
+
+runcmd:
+  - [ sh, -c, 'locale-gen en_US.UTF-8' ]
+  - [ sh, -c, 'update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8' ]
+  - [ sh, -c, 'curl -sL https://deb.nodesource.com/setup_16.x | bash -' ]
+  - [ sh, -c, 'apt-get install -y nodejs' ]  # 安装最新版本的 nodejs，packages 中安装的不是最新版。
+  - [ sh, -c, 'curl -sL https://github.com/jesseduffield/lazydocker/releases/latest/download/lazydocker_$(uname -s)_$(uname -m).tar.gz | tar xz -C /usr/local/bin lazydocker' ]
+  - [ sh, -c, 'curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose' ]
+  - [ sh, -c, 'chmod +x /usr/local/bin/docker-compose' ]
+  - systemctl start docker
+  - systemctl enable docker

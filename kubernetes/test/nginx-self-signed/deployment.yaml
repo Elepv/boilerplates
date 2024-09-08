@@ -1,0 +1,107 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: test
+# ---
+# apiVersion: traefik.containo.us/v1alpha1
+# kind: Middleware
+# metadata:
+#   name: redirecttohttps
+#   namespace: nginx1
+# spec:
+#   redirectScheme:
+#     permanent: false
+#     scheme: https
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deploy
+  namespace: test
+spec:
+  replicas: 1
+  selector:
+    matchLabels: 
+      app: nginx-app
+  template:
+    metadata:
+      labels:
+        app: nginx-app
+    spec:
+      containers:
+      - name: nginx-app
+        image: nginx
+        ports:
+        - name: web
+          containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-svc
+  namespace: test
+  labels:
+    app: nginx-app
+spec:
+  type: ClusterIP
+  # type: LoadBalancer
+  ports:
+  - name:  http
+    port:  80
+    targetPort: 80
+    protocol: TCP
+  # - name: https
+  #   port: 443
+  #   targetPort: 443
+  #   protocol: TCP
+  selector:
+    app: nginx-app
+# ---
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: nginx1-ingress
+#   namespace: nginx1
+#   annotations:
+#     kubernetes.io/ingress.class: traefik-external
+#     traefik.ingress.kubernetes.io/router.entrypoints: web, websecure
+#     traefik.ingress.kubernetes.io/router.middlewares: nginx1-redirecttohttps@kubernetescrd
+# spec:
+#   rules:
+#   - host: "nginx1.local.elepnt.com"
+#     http:
+#       paths:
+#       - path: /
+#         pathType: Prefix
+#         backend:
+#           service:
+#             name: nginx1-svc 
+#             port:
+#               number: 80 
+#   tls:
+#   - hosts:
+#     - nginx1.local.elepnt.com
+#     secretName: nginx1-tls-secret
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: nginx-ingress
+  namespace: test
+  annotations:
+    kubernetes.io/ingress.class: traefik-external
+spec:
+  entryPoints:
+    - web
+    - websecure
+  routes:
+    - match: Host(`nginx.local.elepnt.com`)
+      kind: Rule
+      services:
+        - name: nginx-svc
+          port: 80
+      middlewares:
+        - name: redirecttohttps
+  tls:
+    secretName: ingress-local-tls  

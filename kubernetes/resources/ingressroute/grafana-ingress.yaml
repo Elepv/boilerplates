@@ -1,0 +1,22 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: grafana-ir
+  namespace: grafana
+  # annotations:
+  #   kubernetes.io/ingress.class: traefik-external
+spec:
+  entryPoints:
+    - websecure
+    # - web
+  routes:
+    - kind: Rule
+      match: Host(`grafana.local.elepnt.com`)
+      # middlewares:
+      #   - name: traefik-dashboard-basicauth
+      #     namespace: traefik
+      services:
+        - name: vgrafana
+          port: 3000
+  tls:
+    secretName: local-elepnt-com-tls

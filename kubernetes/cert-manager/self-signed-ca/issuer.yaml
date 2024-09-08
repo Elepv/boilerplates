@@ -1,0 +1,10 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: elepnt-com-ca
+  namespace: traefik
+  labels:
+    app: elepnt-com-ca
+spec:
+  ca:
+    secretName: self-signed-ca

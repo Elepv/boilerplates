@@ -6,7 +6,7 @@
 # we are looking to create a proxmox_vm_qemu entity named test_server
 # !!! rancher-k8s can edit !!!
 # resource "proxmox_vm_qemu" "k8s-ubt2004" {
-resource "proxmox_vm_qemu" "k8s-ubt2210" {
+resource "proxmox_vm_qemu" "k8s-ubt2004" {
 
   # !!! 需要改动 !!!
   # just want 1 for now, set to 0 and apply to destroy VM
@@ -32,7 +32,7 @@ resource "proxmox_vm_qemu" "k8s-ubt2210" {
   cores = 2
   sockets = 1
   cpu = "host"
-  memory = 4096
+  memory = 8192
   scsihw = "virtio-scsi-pci"
   bootdisk = "scsi0"
 

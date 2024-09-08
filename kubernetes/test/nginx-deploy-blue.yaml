@@ -1,0 +1,115 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deploy-blue
+  namespace: test
+  labels:
+    app: nginx
+spec:
+  selector:
+    matchLabels:
+      app: nginx-blue
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nginx-blue
+    spec:
+      volumes:
+      - name: webdata
+        emptyDir: {}
+      initContainers:
+        - name: web-content
+          image: busybox
+          volumeMounts:
+          - name: webdata
+            mountPath: "/webdata"
+          command: ["/bin/sh", "-c", 'echo "<h1>I am <font color=blue>BLUE</font></h1>" > /webdata/index.html']
+      containers:
+      - name: nginx
+        image: nginx:latest
+        name: nginx
+        volumeMounts:
+        - name: webdata
+          mountPath: "/usr/share/nginx/html"
+        # ports:
+        # Ports are the ports that your application uses.
+        # - containerPort: 80 # The port that your application uses
+        # volumes:
+        # - name: nfs
+        #   persistentVolumeClaim:
+        #     claimName: nfs
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name:  nginx-blue-svc
+  namespace: test
+  labels:
+    app: nginx-blue
+spec:
+  # ---
+  # ClusterIP means this service can be accessed by any pod in the cluster
+  type:  ClusterIP
+  ports:
+  - name:  http
+    port:  80
+    targetPort: 80
+    protocol: TCP
+  # ---
+  # NodePort means this service is only accessible by pods in the same namespace
+  # type:  NodePort
+  # ports:
+  # - name:  http
+  #   port:  80
+  #   nodePort: 30001
+  #   protocol: TCP  # optional protocol
+  # ---
+  # LoadBalancer means this service is load-balanced across all nodes in the cluster
+  # type:  LoadBalancer
+  selector:
+    app:  nginx-blue
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: nginx-blue
+  namespace: test
+  # annotations: 
+  #   kubernetes.io/ingress.class: traefik-external
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`blue.local.elepnt.com`)
+      kind: Rule
+      services:
+        - name: nginx-blue-svc
+          port: 80
+# ---
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: nginx1-ingress
+#   namespace: nginx1
+#   annotations:
+#     kubernetes.io/ingress.class: traefik
+#     traefik.ingress.kubernetes.io/router.entrypoints: web, websecure
+#     traefik.ingress.kubernetes.io/router.middlewares: nginx1-redirecttohttps@kubernetescrd
+# spec:
+#   rules:
+#   - host: "nginx2.local.elepnt.com"
+#     http:
+#       paths:
+#       - path: /
+#         pathType: Prefix
+#         backend:
+#           service:
+#             name: nginx1-svc 
+#             port:
+#               number: 80 
+#   tls:
+#   - hosts:
+#     - nginx2.local.elepnt.com
+#     secretName: nginx2-tls-secret

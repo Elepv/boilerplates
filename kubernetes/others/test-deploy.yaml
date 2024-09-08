@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ubuntu-deployment
+  labels:
+    app: ubuntu
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ubuntu
+  template:
+    metadata:
+      labels:
+        app: ubuntu
+    spec:
+      containers:
+      - name: ubuntu
+        image: ubuntu
+        command: ["sleep", "123456"]
+      
+        volumeMounts:             # 把下面挂载到Pod中的volume挂载到容器中
+          - name: simple-bank-config
+            mountPath: /var
+          # - name: simple-bank-secret
+            # mountPath: /app
+            # readOnly: true
+
+      # 把配置文件挂载到Pod
+      volumes:
+        - name: simple-bank-config
+          configMap:
+            name: simple-bank-config
+        # - name: simple-bank-secret
+          # secret:
+            # secretName: simpebank-secret
+      nodeSelector:
+        beta.kubernetes.io/os: linux

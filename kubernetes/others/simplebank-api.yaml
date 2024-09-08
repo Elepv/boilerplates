@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simplebank-api
+spec:
+  selector:
+    matchLabels:
+      app: simplebank-api
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: simplebank-api
+    spec:
+      containers:
+      - name: simplebank-api
+        image: simplebank-api:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080

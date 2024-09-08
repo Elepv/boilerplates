@@ -1,0 +1,15 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: local-elepnt-com
+  namespace: default
+spec:
+  secretName: local-elepnt-com-staging-tls
+  issuerRef:
+    name: letsencrypt-staging
+    kind: ClusterIssuer
+  commonName: "*.local.elepnt.com"
+  dnsNames:
+    - "local.elepnt.com"
+    - "*.local.elepnt.com"

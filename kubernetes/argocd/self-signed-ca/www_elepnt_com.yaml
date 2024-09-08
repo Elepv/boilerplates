@@ -1,0 +1,19 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: www-elepnt-com-tls
+  labels:
+    app: www-elepnt-com
+spec:
+  secretName: www-elepnt-com-tls
+  duration: 87600h # 10y
+  issuerRef:
+    name: elepnt-com-ca
+  commonName: "www.elepnt.com"
+  dnsNames:
+  - www
+  - www.elepnt.com
+  - argocd.elepnt.com
+  - traefik.elepnt.com
+  - www1.elepnt.com
+  - www.local.elepnt.com

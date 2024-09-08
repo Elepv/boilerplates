@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: nginx-cert
+  namespace: test
+spec:
+  secretName: nginx-tls-secret
+  issuerRef:
+    name: self-signed-clusterissuer
+    kind: ClusterIssuer
+  dnsNames:
+    - nginx.local.elepnt.com

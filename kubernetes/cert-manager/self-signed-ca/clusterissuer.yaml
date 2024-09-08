@@ -1,0 +1,9 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: elepnt-com-ca
+  labels:
+    app: elepnt-com-ca
+spec:
+  ca:
+    secretName: self-signed-ca
