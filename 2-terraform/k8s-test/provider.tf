@@ -1,3 +1,0 @@
-terrafor {
-  require_version =
-}

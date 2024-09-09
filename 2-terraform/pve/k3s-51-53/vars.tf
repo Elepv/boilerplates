@@ -7,5 +7,5 @@ variable "proxmox_host" {
 }
 
 variable "template_name" {
-    default = "ubuntu-server-focal-tmpl2"
+    default = "ubuntu-22.04.2-live-server-amd64.iso"
 }

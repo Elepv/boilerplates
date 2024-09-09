@@ -4,19 +4,21 @@
 
 # resource is formatted to be "[type]" "[entity_name]" so in this case
 # we are looking to create a proxmox_vm_qemu entity named test_server
-resource "proxmox_vm_qemu" "tf-test-server" {
+# !!! rancher-k8s can edit !!!
+# resource "proxmox_vm_qemu" "k8s-ubt2204" {
+resource "proxmox_vm_qemu" "k8s-ubt2204" {
 
   # !!! 需要改动 !!!
   # just want 1 for now, set to 0 and apply to destroy VM
-  count = 3 
+  count = 3
 
   # !!! 需要改动 ！！！
   # vm-id
-  vmid = "18${count.index + 1}"
+  vmid = "13${count.index + 1}"
 
   # !!! 需要改动 ！！！
   #count.index starts at 0, so + 1 means this VM will be named test-vm-1 in proxmox
-  name = "tf-test-vm8-${count.index + 1}" 
+  name = "k3s-vm3-${count.index + 1}" 
 
   # this now reaches out to the vars file. I could've also used this var above in the pm_api_url setting but wanted to spell it out up there. target_node is different than api_url. target_node is which node hosts the template and thus also which node will host the new VM. it can be different than the host you use to communicate with the API. the variable contains the contents "prox-1u"
   target_node = var.proxmox_host
@@ -30,16 +32,16 @@ resource "proxmox_vm_qemu" "tf-test-server" {
   cores = 2
   sockets = 1
   cpu = "host"
-  memory = 4096
+  memory = 8192
   scsihw = "virtio-scsi-pci"
   bootdisk = "scsi0"
 
   disk {
     slot = 0
     # set disk size here. leave it small for testing because expanding the disk takes time.
-    size = "60G"
+    size = "80G"
     type = "scsi"
-    storage = "sn750wd2t"
+    storage = "nvme-lvm"
     iothread = 1
   }
   
@@ -62,7 +64,7 @@ resource "proxmox_vm_qemu" "tf-test-server" {
   # be 10.0.9.51 since count.index starts at 0. this is how you can create
   # multiple VMs and have an IP assigned to each (.51, .52, .53, etc.)
 
-  ipconfig0 = "ip=10.0.9.8${count.index + 1}/24,gw=10.0.9.21"
+  ipconfig0 = "ip=10.0.9.3${count.index + 1}/24,gw=10.0.9.24,dns=10.0.9.28 1.1.1.1"
   
   # (Optional) Default User
   ciuser = "cris"
