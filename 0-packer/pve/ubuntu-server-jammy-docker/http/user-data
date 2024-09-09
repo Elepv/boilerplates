@@ -1,0 +1,55 @@
+#cloud-config
+autoinstall:
+  version: 1
+  locale: en_US.UTF-8
+  keyboard:
+    layout: us
+  network:
+    version: 2
+    ethernets:
+      ens18:
+        dhcp4: false
+        addresses: [10.0.9.64/24]  # 替换为您想要的静态 IP
+        routes:
+          - to: default
+            via: 10.0.9.21
+        nameservers:
+          addresses: [8.8.8.8, 10.0.9.28]
+  late-commands:
+    - sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/' /target/etc/apt/sources.list
+    - sed -i 's/security.ubuntu.com/mirrors.aliyun.com/' /target/etc/apt/sources.list
+    # - curtin in-target --target=/target -- apt-get update
+    # - curtin in-target --target=/target -- apt-get upgrade -y
+
+  ssh:
+    install-server: true
+    allow-pw: true
+    disable_root: true
+    ssh_quiet_keygen: true
+    allow_public_ssh_keys: true
+  packages:
+    - openssh-server
+    - qemu-guest-agent
+    - sudo
+    # - language-pack-zh-hans
+  late-commands:
+    - curtin in-target --target=/target -- systemctl start qemu-guest-agent
+    - curtin in-target --target=/target -- systemctl enable qemu-guest-agent
+  storage:
+    layout:
+      name: direct
+    swap:
+      size: 0
+  user-data:
+    package_upgrade: false
+    timezone: Asia/Shanghai
+    users:
+      - name: cris
+        groups: [adm, cdrom, dip, plugdev, lxd, sudo]
+        lock-passwd: false
+        sudo: ALL=(ALL) NOPASSWD:ALL
+        shell: /bin/bash
+        # passwd: "06295666"
+        # - or -
+        ssh_authorized_keys:
+          - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCcF1A9VFjMc6UAHTV6oAjqoCl5T06bBWAFtxPeWvXpPGHHmGbm8uPWrBT+OshDykP0mrEri163Uc8iujVmzSxqNBQWBMSA5C6EzqyjvswQf0zy0nCOqpqt0R+gTRckHG0Q4P5wjd3aP6UGR3B1+4YtKT72Ynx9xV1cm7SHrD0DGOB2Au4459M6iF+gmUCrMHLopkfCnauzl/DL/tzTX2IaAOigMKhKzuF5kIxiRLnm9XQVxj3BmVNlfGh4/qSmRYje0pjkR5qklHU7A+VLivhDeifP0ff9RwnofsCM1RQ4Rg43AXMFp+pAB37RQLWwGZzVM/4xQUcpVq/v3jvJJRaIgQHXYmNunUiWwsfHvhRpT7tH1MgrCsy/vCFOXQFOiwcOdc4TtURGg2XcPRfXcvO71sCeTvTprPvc+Glz0UxKxTL/m1g3ssUWn7U8kk+nL96UX5yPOo4JleNGTEHxUB1OOLWeyWTJtunJK8spz6k22JYukdZvBXpod9s7IWThBFU= vivishadow@126.com
