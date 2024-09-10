@@ -64,7 +64,7 @@ source "proxmox-iso" "ubuntu-server-jammy" {
     scsi_controller = "virtio-scsi-pci"
 
     disks {
-        disk_size = "20G"
+        disk_size = "10G"
         format = "raw"
         storage_pool = "nvme-lvm"
         type = "scsi"
@@ -84,7 +84,7 @@ source "proxmox-iso" "ubuntu-server-jammy" {
     } 
 
     # VM Cloud-Init Settings
-    cloud_init = true
+    cloud_init = false  # if not success, turn it to true
     cloud_init_storage_pool = "nvme-lvm"
 
     # PACKER Autoinstall Settings
